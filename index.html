@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RomaniaAI — Your Guide to Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #002B7F;
+    --yellow: #FCD116;
+    --red: #CE1126;
+    --cream: #FAF7F2;
+    --dark: #0D0D0D;
+    --muted: #6B6560;
+    --border: rgba(0,43,127,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: inherit;
+  }
+
+  .flag-bar {
+    display: flex; height: 28px; width: 28px; border-radius: 6px;
+    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    flex-shrink: 0;
+  }
+  .flag-bar div { flex: 1; }
+  .flag-bar .f1 { background: var(--blue); }
+  .flag-bar .f2 { background: var(--yellow); }
+  .flag-bar .f3 { background: var(--red); }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--red); }
+
+  .beta-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
+    background: var(--yellow); color: var(--blue);
+    padding: 2px 8px; border-radius: 20px; text-transform: uppercase;
+  }
+
+  nav { display: flex; gap: 28px; align-items: center; }
+  nav a {
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--blue); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 72px 40px 48px;
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--red);
+    background: rgba(206,17,38,0.07); border: 1px solid rgba(206,17,38,0.2);
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: italic; color: var(--blue);
+    position: relative;
+  }
+
+  .hero p {
+    font-size: 16px; color: var(--muted); line-height: 1.65;
+    max-width: 520px; margin: 0 auto 40px;
+  }
+
+  /* ── QUICK TOPICS ── */
+  .topics {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; margin-bottom: 40px;
+  }
+
+  .topic-pill {
+    padding: 8px 16px; border-radius: 100px;
+    font-size: 13px; font-weight: 500;
+    border: 1.5px solid var(--border);
+    background: white; cursor: pointer;
+    transition: all 0.18s; color: var(--dark);
+    white-space: nowrap;
+  }
+  .topic-pill:hover {
+    border-color: var(--blue);
+    background: var(--blue); color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,43,127,0.18);
+  }
+
+  /* ── CHAT CONTAINER ── */
+  .chat-wrapper {
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 40px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-box {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,43,127,0.07);
+    display: flex; flex-direction: column;
+  }
+
+  .messages {
+    padding: 28px 28px 16px;
+    display: flex; flex-direction: column; gap: 20px;
+    min-height: 320px; max-height: 480px;
+    overflow-y: auto;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .msg {
+    display: flex; gap: 12px; align-items: flex-start;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .avatar.ai {
+    background: var(--blue); color: var(--yellow);
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; font-weight: 700;
+  }
+
+  .avatar.user-av {
+    background: var(--cream); border: 1.5px solid var(--border);
+    color: var(--muted); font-size: 16px;
+  }
+
+  .bubble {
+    max-width: 88%; padding: 14px 18px;
+    border-radius: 16px; font-size: 14px; line-height: 1.6;
+  }
+
+  .msg.ai .bubble {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-top-left-radius: 4px;
+  }
+
+  .msg.user .bubble {
+    background: var(--blue); color: white;
+    border-top-right-radius: 4px;
+  }
+
+  .bubble strong {
+    display: block; font-weight: 600; margin-bottom: 6px;
+    color: var(--blue);
+  }
+  .msg.user .bubble strong { color: var(--yellow); }
+
+  .bubble ul {
+    padding-left: 18px; margin-top: 8px; display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .bubble .step {
+    display: flex; gap: 8px; align-items: flex-start;
+    padding: 8px 12px; border-radius: 10px;
+    background: white; border: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--blue); color: var(--yellow);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  .step-text { font-size: 13px; line-height: 1.5; }
+
+  .link-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 500;
+    background: rgba(0,43,127,0.07); color: var(--blue);
+    border: 1px solid rgba(0,43,127,0.18);
+    padding: 3px 10px; border-radius: 20px; margin: 3px 3px 0 0;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .link-chip:hover { background: var(--blue); color: white; }
+
+  .warning-box {
+    background: rgba(252,209,22,0.15); border: 1px solid rgba(252,209,22,0.5);
+    border-radius: 10px; padding: 10px 14px; margin-top: 12px;
+    font-size: 12.5px; color: #7a6000;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+
+  /* ── INPUT ── */
+  .input-area {
+    padding: 16px 20px;
+    border-top: 1.5px solid var(--border);
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+
+  textarea {
+    flex: 1; resize: none;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 12px 16px; font-family: 'DM Sans', sans-serif;
+    font-size: 14px; line-height: 1.5; color: var(--dark);
+    background: var(--cream); outline: none;
+    transition: border-color 0.2s;
+    min-height: 48px; max-height: 120px;
+  }
+  textarea:focus { border-color: var(--blue); }
+  textarea::placeholder { color: #b0ab9e; }
+
+  .send-btn {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: var(--blue); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s; flex-shrink: 0;
+  }
+  .send-btn:hover { background: #001f5e; transform: scale(1.05); }
+  .send-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+  .send-btn svg { width: 18px; height: 18px; fill: white; }
+
+  /* ── TYPING ── */
+  .typing-indicator {
+    display: flex; gap: 5px; padding: 14px 18px;
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 16px; border-top-left-radius: 4px;
+    align-items: center; width: fit-content;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--blue); opacity: 0.4;
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 24px 40px;
+    font-size: 12px; color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-strip {
+    display: flex; justify-content: center; gap: 6px;
+    margin-bottom: 10px;
+  }
+  .strip { height: 4px; width: 32px; border-radius: 2px; }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 20px; }
+    .hero { padding: 48px 20px 32px; }
+    .chat-wrapper { padding: 0 20px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="flag-bar">
+      <div class="f1"></div>
+      <div class="f2"></div>
+      <div class="f3"></div>
+    </div>
+    <span class="logo-text">Romania<span>AI</span></span>
+    <span class="beta-tag">Beta</span>
+  </a>
+ 
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">🇷🇴 Built for Romania</div>
+  <h1>Navigate Romania<br>with <em>confidence</em></h1>
+  <p>Your AI guide to Romanian bureaucracy, banking, taxes, housing, and more — in plain language, with official sources.</p>
+
+  <div class="topics">
+    <button class="topic-pill" onclick="askQuestion('How do I renew my residence permit in Romania?')">🪪 Residence permit</button>
+    <button class="topic-pill" onclick="askQuestion('How do I open a bank account in Romania as a foreigner?')">🏦 Bank account</button>
+    <button class="topic-pill" onclick="askQuestion('How do I register a SRL company in Romania?')">🏢 Start a company</button>
+    <button class="topic-pill" onclick="askQuestion('What taxes do freelancers pay in Romania?')">💶 Freelancer taxes</button>
+    <button class="topic-pill" onclick="askQuestion('Where can I find student housing in Timișoara?')">🏠 Student housing</button>
+    <button class="topic-pill" onclick="askQuestion('How do I get a Romanian driving license?')">🚗 Driving license</button>
+  </div>
+</section>
+
+<div class="chat-wrapper">
+  <div class="chat-box">
+    <div class="messages" id="messages">
+      <div class="msg ai">
+        <div class="avatar ai">R</div>
+        <div class="bubble">
+          <strong>Welcome to RomaniaAI 👋</strong>
+          I'm your AI assistant for everything Romania — from bureaucracy and banking to taxes and housing. Ask me anything, or pick a topic above to get started.
+        </div>
+      </div>
+    </div>
+    <div class="input-area">
+      <textarea id="userInput" placeholder="Ask me anything about living in Romania…" rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-strip">
+    <div class="strip" style="background:var(--blue)"></div>
+    <div class="strip" style="background:var(--yellow)"></div>
+    <div class="strip" style="background:var(--red)"></div>
+  </div>
+  RomaniaAI is a demo project. Always verify information with official Romanian authorities.
+</footer>
+
+<script>
+const SYSTEM_PROMPT = `You are RomaniaAI, an expert AI assistant specialized in helping people navigate life in Romania — including bureaucracy, banking, taxes, housing, visas, company registration, healthcare, and more.
+
+Respond in a structured, helpful way. Use this exact HTML format for your answers (output raw HTML, no markdown):
+
+For step-by-step processes, use:
+<strong>Title of the answer</strong>
+Brief intro sentence.
+<div class="step"><div class="step-num">1</div><div class="step-text">Step description</div></div>
+... more steps ...
+
+For official links/resources, add:
+<div style="margin-top:12px"><span class="link-chip">🔗 Official Site Name</span></div>
+
+For important warnings/deadlines, use:
+<div class="warning-box">⚠️ Warning text here</div>
+
+Keep answers practical, accurate, and concise. Focus on actionable steps. Mention specific Romanian institutions (ANAF, IGI, ONRC, etc.) where relevant. Always note if the person should consult an official source for their specific situation.
+
+Respond ONLY with the HTML content for the bubble — no preamble, no code fences.`;
+
+let conversationHistory = [];
+
+async function sendMessage(overrideText) {
+  const input = document.getElementById('userInput');
+  const text = overrideText || input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  autoResize(input);
+
+  appendMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  const typingId = showTyping();
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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',
+        'HTTP-Referer': 'http://localhost:5500',
+        'X-Title': 'RomaniaAI'
+      },
+      body: JSON.stringify({
+        model: 'openrouter/auto',
+        max_tokens: 1000,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...conversationHistory
+        ]
+      })
+    });
+
+    const data = await res.json();
+    console.log('API response:', JSON.stringify(data));
+    const aiText = data.choices?.[0]?.message?.content || 'API error: ' + JSON.stringify(data);
+
+    removeTyping(typingId);
+    conversationHistory.push({ role: 'assistant', content: aiText });
+    appendMessage('ai', aiText, true);
+  } catch (err) {
+    removeTyping(typingId);
+    const errMsg = err?.message || String(err);
+    appendMessage('ai', '<strong>Error:</strong> ' + errMsg, true);
+    console.error('Full error:', err);
+  }
+
+  btn.disabled = false;
+  input.focus();
+}
+
+function appendMessage(role, content, isHTML = false) {
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = `avatar ${role === 'ai' ? 'ai' : 'user-av'}`;
+  avatarDiv.textContent = role === 'ai' ? 'R' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  if (isHTML) {
+    bubble.innerHTML = content;
+  } else {
+    bubble.textContent = content;
+  }
+
+  div.appendChild(avatarDiv);
+  div.appendChild(bubble);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function showTyping() {
+  const messages = document.getElementById('messages');
+  const id = 'typing-' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = id;
+
+  const av = document.createElement('div');
+  av.className = 'avatar ai'; av.textContent = 'R';
+
+  const indicator = document.createElement('div');
+  indicator.className = 'typing-indicator';
+  indicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+
+  div.appendChild(av); div.appendChild(indicator);
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return id;
+}
+
+function removeTyping(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+function askQuestion(q) {
+  document.getElementById('userInput').value = q;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+</script>
+</body>
+</html>
