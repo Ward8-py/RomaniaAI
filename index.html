@@ -269,31 +269,31 @@
 </div>
 
 <script>
-var SYSTEM_PROMPT = "You are RomaniaAI, an expert AI assistant helping people navigate life in Romania — bureaucracy, banking, taxes, housing, visas, company registration, healthcare. Respond with raw HTML only, no markdown, no code fences. For steps use: <div class='step'><div class='step-num'>1</div><div class='step-text'>detail</div></div>. For links use: <span class='link-chip'>Site Name</span>. For warnings use: <div class='warning-box'>warning text</div>. Start with <strong>Title</strong> then a brief intro. Be practical and mention Romanian institutions like ANAF, IGI, ONRC where relevant.";
-
 var chatHistory = [];
 
 function sendMessage(preset) {
   var input = document.getElementById('userInput');
   var text = (preset || input.value).trim();
   if (!text) return;
+  
   input.value = '';
   input.style.height = 'auto';
   appendMsg('user', text, false);
+  
   chatHistory.push({ role: 'user', content: text });
+  
   var btn = document.getElementById('sendBtn');
   btn.disabled = true;
   var tid = showTyping();
-  fetch('https://openrouter.ai/api/v1/chat/completions', {
+
+  // ⚠️ CRITICAL: Replace YOUR_VERCEL_APP_URL with your actual backend URL here!
+  fetch('https://YOUR_VERCEL_APP_URL.vercel.app/api/chat', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer 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'
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'openrouter/hunter-alpha',
-      max_tokens: 1000,
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(chatHistory)
+      messages: chatHistory
     })
   })
   .then(function(resp) { return resp.json(); })
@@ -301,8 +301,16 @@ function sendMessage(preset) {
     var m = d.choices && d.choices[0] && d.choices[0].message;
     var reply = (m && (m.content || m.reasoning)) || '';
     if (!reply) reply = '<strong>Error:</strong> ' + ((d.error && d.error.message) || 'No response received');
+    
     removeTyping(tid);
-    chatHistory.push({ role: 'assistant', content: reply });
+    
+    // Strip HTML tags before storing in history so it doesn't corrupt future requests
+    var plainReply = reply.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    chatHistory.push({ role: 'assistant', content: plainReply });
+    
+    // Keep history to last 10 messages to avoid token limits
+    if (chatHistory.length > 10) chatHistory = chatHistory.slice(chatHistory.length - 10);
+    
     appendMsg('ai', reply, true);
     btn.disabled = false;
   })
