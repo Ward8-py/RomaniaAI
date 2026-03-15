@@ -6,302 +6,121 @@
 <title>RomaniaAI — Your Guide to Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blue: #002B7F;
-    --yellow: #FCD116;
-    --red: #CE1126;
-    --cream: #FAF7F2;
-    --dark: #0D0D0D;
-    --muted: #6B6560;
-    --border: rgba(0,43,127,0.12);
-  }
+  :root { --blue:#002B7F; --yellow:#FCD116; --red:#CE1126; --cream:#FAF7F2; --dark:#0D0D0D; --muted:#6B6560; --border:rgba(0,43,127,0.12); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  header { display:flex; align-items:center; justify-content:space-between; padding:18px 40px; border-bottom:1px solid var(--border); background:var(--cream); position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:inherit; }
+  .flag-bar { display:flex; height:28px; width:28px; border-radius:6px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.18); flex-shrink:0; }
+  .flag-bar div { flex:1; }
+  .f1{background:var(--blue);} .f2{background:var(--yellow);} .f3{background:var(--red);}
+  .logo-text { font-family:'Playfair Display',serif; font-weight:900; font-size:22px; letter-spacing:-0.5px; }
+  .logo-text span { color:var(--red); }
+  .beta-tag { font-size:10px; font-weight:500; letter-spacing:1.5px; background:var(--yellow); color:var(--blue); padding:2px 8px; border-radius:20px; text-transform:uppercase; }
+  nav a { font-size:13px; font-weight:500; color:var(--muted); text-decoration:none; cursor:pointer; transition:color 0.2s; }
+  nav a:hover { color:var(--blue); }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--dark);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  .hero { padding:64px 40px 32px; max-width:760px; margin:0 auto; width:100%; text-align:center; }
+  .hero-eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:var(--red); background:rgba(206,17,38,0.07); border:1px solid rgba(206,17,38,0.2); padding:5px 12px; border-radius:20px; margin-bottom:24px; }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(36px,5vw,58px); font-weight:900; line-height:1.08; letter-spacing:-1.5px; margin-bottom:20px; }
+  .hero h1 em { font-style:italic; color:var(--blue); }
+  .hero p { font-size:16px; color:var(--muted); line-height:1.65; max-width:520px; margin:0 auto 32px; }
 
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 40px;
-    border-bottom: 1px solid var(--border);
-    background: var(--cream);
-    position: sticky; top: 0; z-index: 100;
-    backdrop-filter: blur(10px);
-  }
+  .faq-pills { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:8px; max-width:760px; margin-left:auto; margin-right:auto; padding:0 40px; }
+  .faq-pill { padding:9px 18px; border-radius:100px; font-size:13px; font-weight:500; border:1.5px solid var(--border); background:white; cursor:pointer; transition:all 0.18s; color:var(--dark); white-space:nowrap; }
+  .faq-pill:hover { border-color:var(--blue); background:var(--blue); color:white; transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,43,127,0.18); }
 
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    text-decoration: none; color: inherit;
-  }
+  .chat-wrapper { max-width:760px; margin:28px auto 0; width:100%; padding:0 40px 40px; flex:1; display:flex; flex-direction:column; }
+  .chat-box { background:white; border:1.5px solid var(--border); border-radius:20px; overflow:hidden; box-shadow:0 8px 40px rgba(0,43,127,0.07); display:flex; flex-direction:column; }
+  .messages { padding:28px 28px 16px; display:flex; flex-direction:column; gap:20px; min-height:360px; max-height:500px; overflow-y:auto; }
+  .messages::-webkit-scrollbar { width:4px; }
+  .messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:4px; }
 
-  .flag-bar {
-    display: flex; height: 28px; width: 28px; border-radius: 6px;
-    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    flex-shrink: 0;
-  }
-  .flag-bar div { flex: 1; }
-  .flag-bar .f1 { background: var(--blue); }
-  .flag-bar .f2 { background: var(--yellow); }
-  .flag-bar .f3 { background: var(--red); }
+  .msg { display:flex; gap:12px; align-items:flex-start; animation:fadeUp 0.35s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+  .msg.user { flex-direction:row-reverse; }
+  .avatar { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; font-weight:600; }
+  .avatar.ai { background:var(--blue); color:var(--yellow); font-family:'Playfair Display',serif; font-size:13px; font-weight:700; }
+  .avatar.user-av { background:var(--cream); border:1.5px solid var(--border); color:var(--muted); font-size:16px; }
+  .bubble { max-width:88%; padding:14px 18px; border-radius:16px; font-size:14px; line-height:1.6; }
+  .msg.ai .bubble { background:var(--cream); border:1px solid var(--border); border-top-left-radius:4px; }
+  .msg.user .bubble { background:var(--blue); color:white; border-top-right-radius:4px; }
+  .bubble strong { display:block; font-weight:600; margin-bottom:6px; color:var(--blue); }
+  .msg.user .bubble strong { color:var(--yellow); }
+  .bubble ul { padding-left:18px; margin-top:8px; display:flex; flex-direction:column; gap:4px; }
+  .step { display:flex; gap:8px; align-items:flex-start; padding:8px 12px; border-radius:10px; background:white; border:1px solid var(--border); margin-top:8px; }
+  .step-num { width:22px; height:22px; border-radius:50%; background:var(--blue); color:var(--yellow); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  .step-text { font-size:13px; line-height:1.5; }
+  .link-chip { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:500; background:rgba(0,43,127,0.07); color:var(--blue); border:1px solid rgba(0,43,127,0.18); padding:3px 10px; border-radius:20px; margin:3px 3px 0 0; cursor:pointer; transition:all 0.15s; }
+  .link-chip:hover { background:var(--blue); color:white; }
+  .warning-box { background:rgba(252,209,22,0.15); border:1px solid rgba(252,209,22,0.5); border-radius:10px; padding:10px 14px; margin-top:12px; font-size:12.5px; color:#7a6000; display:flex; gap:8px; }
 
-  .logo-text {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-size: 22px;
-    letter-spacing: -0.5px;
-  }
-  .logo-text span { color: var(--red); }
+  .input-area { padding:16px 20px; border-top:1.5px solid var(--border); display:flex; gap:10px; align-items:flex-end; }
+  textarea { flex:1; resize:none; border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; color:var(--dark); background:var(--cream); outline:none; transition:border-color 0.2s; min-height:48px; max-height:120px; }
+  textarea:focus { border-color:var(--blue); }
+  textarea::placeholder { color:#b0ab9e; }
+  .send-btn { width:46px; height:46px; border-radius:12px; background:var(--blue); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.18s; flex-shrink:0; }
+  .send-btn:hover { background:#001f5e; transform:scale(1.05); }
+  .send-btn:disabled { background:#ccc; cursor:not-allowed; transform:none; }
+  .send-btn svg { width:18px; height:18px; fill:white; }
 
-  .beta-tag {
-    font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
-    background: var(--yellow); color: var(--blue);
-    padding: 2px 8px; border-radius: 20px; text-transform: uppercase;
-  }
+  .typing-indicator { display:flex; gap:5px; padding:14px 18px; background:var(--cream); border:1px solid var(--border); border-radius:16px; border-top-left-radius:4px; align-items:center; width:fit-content; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--blue); opacity:0.4; animation:bounce 1.2s infinite ease-in-out; }
+  .dot:nth-child(2){animation-delay:0.2s;} .dot:nth-child(3){animation-delay:0.4s;}
+  @keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:0.4;} 40%{transform:translateY(-6px);opacity:1;} }
 
-  .hero {
-    padding: 72px 40px 48px;
-    max-width: 760px;
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-  }
+  footer { text-align:center; padding:24px 40px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); }
+  .footer-strip { display:flex; justify-content:center; gap:6px; margin-bottom:10px; }
+  .strip { height:4px; width:32px; border-radius:2px; }
 
-  .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 500; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--red);
-    background: rgba(206,17,38,0.07); border: 1px solid rgba(206,17,38,0.2);
-    padding: 5px 12px; border-radius: 20px; margin-bottom: 24px;
-  }
+  /* ABOUT PANEL */
+  .about-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; backdrop-filter:blur(3px); }
+  .about-overlay.open { display:block; }
+  .about-panel { position:absolute; right:0; top:0; bottom:0; width:min(520px,100vw); background:var(--cream); overflow-y:auto; box-shadow:-20px 0 60px rgba(0,0,0,0.15); animation:slideIn 0.3s ease; }
+  @keyframes slideIn { from{transform:translateX(100%);}to{transform:translateX(0);} }
+  .about-close { position:sticky; top:16px; float:right; margin:16px 16px 0 0; width:34px; height:34px; border-radius:50%; border:1.5px solid var(--border); background:white; cursor:pointer; font-size:18px; color:var(--muted); display:flex; align-items:center; justify-content:center; }
+  .about-close:hover { color:var(--dark); }
 
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 5vw, 58px);
-    font-weight: 900;
-    line-height: 1.08;
-    letter-spacing: -1.5px;
-    margin-bottom: 20px;
-  }
+  .a-head { padding:48px 40px 28px; border-bottom:1px solid var(--border); }
+  .a-avatar { width:64px; height:64px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .a-avatar span { font-family:'Playfair Display',serif; font-size:24px; font-weight:900; color:var(--yellow); }
+  .a-name { font-family:'Playfair Display',serif; font-size:28px; font-weight:900; letter-spacing:-0.5px; margin-bottom:4px; }
+  .a-role { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--red); margin-bottom:14px; }
+  .a-bio { font-size:13.5px; color:var(--muted); line-height:1.7; margin-bottom:18px; }
+  .a-contacts { display:flex; flex-wrap:wrap; gap:8px; }
+  .a-contact { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; padding:6px 13px; border-radius:20px; text-decoration:none; }
+  .a-contact.primary { background:var(--blue); color:white; }
+  .a-contact.secondary { background:white; border:1.5px solid var(--border); color:var(--muted); }
 
-  .hero h1 em { font-style: italic; color: var(--blue); }
+  .a-section { padding:24px 40px; border-bottom:1px solid var(--border); }
+  .a-section:last-child { border-bottom:none; padding-bottom:48px; }
+  .a-section-title { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; letter-spacing:0.3px; margin-bottom:16px; text-transform:uppercase; font-size:11px; color:var(--muted); letter-spacing:2px; }
 
-  .hero p {
-    font-size: 16px; color: var(--muted); line-height: 1.65;
-    max-width: 520px; margin: 0 auto 40px;
-  }
+  .a-card { background:white; border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:10px; }
+  .a-card:last-child { margin-bottom:0; }
+  .a-card-title { font-weight:600; font-size:14px; color:var(--dark); }
+  .a-card-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+  .a-card-tag { font-size:11px; font-weight:600; color:var(--red); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  .a-card-desc { font-size:13px; color:var(--muted); line-height:1.6; margin-top:6px; }
+  .a-card-bullets { list-style:none; margin-top:8px; display:flex; flex-direction:column; gap:5px; }
+  .a-card-bullets li { font-size:13px; color:var(--muted); line-height:1.5; padding-left:14px; position:relative; }
+  .a-card-bullets li::before { content:'—'; position:absolute; left:0; color:var(--border); }
 
-  .topics {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    justify-content: center; margin-bottom: 40px;
-  }
+  .a-project-num { font-size:10px; font-weight:700; color:var(--blue); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
 
-  .topic-pill {
-    padding: 8px 16px; border-radius: 100px;
-    font-size: 13px; font-weight: 500;
-    border: 1.5px solid var(--border);
-    background: white; cursor: pointer;
-    transition: all 0.18s; color: var(--dark);
-    white-space: nowrap;
-  }
-  .topic-pill:hover {
-    border-color: var(--blue);
-    background: var(--blue); color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,43,127,0.18);
-  }
+  .chip-wrap { display:flex; flex-wrap:wrap; gap:7px; }
+  .chip { display:inline-flex; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:500; }
+  .chip-b { background:rgba(0,43,127,0.07); border:1px solid rgba(0,43,127,0.15); color:var(--blue); }
+  .chip-r { background:rgba(206,17,38,0.06); border:1px solid rgba(206,17,38,0.15); color:var(--red); }
+  .chip-y { background:rgba(252,209,22,0.12); border:1px solid rgba(252,209,22,0.4); color:#7a6000; }
 
-  .chat-wrapper {
-    max-width: 760px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 0 40px 40px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .chat-box {
-    background: white;
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 8px 40px rgba(0,43,127,0.07);
-    display: flex; flex-direction: column;
-  }
-
-  .messages {
-    padding: 28px 28px 16px;
-    display: flex; flex-direction: column; gap: 20px;
-    min-height: 320px; max-height: 480px;
-    overflow-y: auto;
-  }
-
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
-  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-  .msg {
-    display: flex; gap: 12px; align-items: flex-start;
-    animation: fadeUp 0.35s ease both;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg.user { flex-direction: row-reverse; }
-
-  .avatar {
-    width: 34px; height: 34px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; flex-shrink: 0; font-weight: 600;
-  }
-
-  .avatar.ai {
-    background: var(--blue); color: var(--yellow);
-    font-family: 'Playfair Display', serif;
-    font-size: 13px; font-weight: 700;
-  }
-
-  .avatar.user-av {
-    background: var(--cream); border: 1.5px solid var(--border);
-    color: var(--muted); font-size: 16px;
-  }
-
-  .bubble {
-    max-width: 88%; padding: 14px 18px;
-    border-radius: 16px; font-size: 14px; line-height: 1.6;
-  }
-
-  .msg.ai .bubble {
-    background: var(--cream);
-    border: 1px solid var(--border);
-    border-top-left-radius: 4px;
-  }
-
-  .msg.user .bubble {
-    background: var(--blue); color: white;
-    border-top-right-radius: 4px;
-  }
-
-  .bubble strong {
-    display: block; font-weight: 600; margin-bottom: 6px;
-    color: var(--blue);
-  }
-  .msg.user .bubble strong { color: var(--yellow); }
-
-  .bubble ul {
-    padding-left: 18px; margin-top: 8px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-
-  .bubble .step {
-    display: flex; gap: 8px; align-items: flex-start;
-    padding: 8px 12px; border-radius: 10px;
-    background: white; border: 1px solid var(--border);
-    margin-top: 8px;
-  }
-
-  .step-num {
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--blue); color: var(--yellow);
-    font-size: 11px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-  }
-
-  .step-text { font-size: 13px; line-height: 1.5; }
-
-  .link-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 500;
-    background: rgba(0,43,127,0.07); color: var(--blue);
-    border: 1px solid rgba(0,43,127,0.18);
-    padding: 3px 10px; border-radius: 20px; margin: 3px 3px 0 0;
-    text-decoration: none; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .link-chip:hover { background: var(--blue); color: white; }
-
-  .warning-box {
-    background: rgba(252,209,22,0.15); border: 1px solid rgba(252,209,22,0.5);
-    border-radius: 10px; padding: 10px 14px; margin-top: 12px;
-    font-size: 12.5px; color: #7a6000;
-    display: flex; gap: 8px; align-items: flex-start;
-  }
-
-  .input-area {
-    padding: 16px 20px;
-    border-top: 1.5px solid var(--border);
-    display: flex; gap: 10px; align-items: flex-end;
-  }
-
-  textarea {
-    flex: 1; resize: none;
-    border: 1.5px solid var(--border); border-radius: 12px;
-    padding: 12px 16px; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; line-height: 1.5; color: var(--dark);
-    background: var(--cream); outline: none;
-    transition: border-color 0.2s;
-    min-height: 48px; max-height: 120px;
-  }
-  textarea:focus { border-color: var(--blue); }
-  textarea::placeholder { color: #b0ab9e; }
-
-  .send-btn {
-    width: 46px; height: 46px; border-radius: 12px;
-    background: var(--blue); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.18s; flex-shrink: 0;
-  }
-  .send-btn:hover { background: #001f5e; transform: scale(1.05); }
-  .send-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-  .send-btn svg { width: 18px; height: 18px; fill: white; }
-
-  .typing-indicator {
-    display: flex; gap: 5px; padding: 14px 18px;
-    background: var(--cream); border: 1px solid var(--border);
-    border-radius: 16px; border-top-left-radius: 4px;
-    align-items: center; width: fit-content;
-  }
-  .dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--blue); opacity: 0.4;
-    animation: bounce 1.2s infinite ease-in-out;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-    40% { transform: translateY(-6px); opacity: 1; }
-  }
-
-  footer {
-    text-align: center; padding: 24px 40px;
-    font-size: 12px; color: var(--muted);
-    border-top: 1px solid var(--border);
-  }
-
-  .footer-strip {
-    display: flex; justify-content: center; gap: 6px;
-    margin-bottom: 10px;
-  }
-  .strip { height: 4px; width: 32px; border-radius: 2px; }
-
-  @media (max-width: 600px) {
-    header { padding: 14px 20px; }
-    .hero { padding: 48px 20px 32px; }
-    .chat-wrapper { padding: 0 20px 32px; }
+  @media(max-width:600px) {
+    header{padding:14px 20px;}
+    .hero{padding:40px 20px 24px;}
+    .faq-pills{padding:0 20px;}
+    .chat-wrapper{padding:0 20px 32px; margin-top:20px;}
+    .a-head,.a-section{padding-left:24px;padding-right:24px;}
   }
 </style>
 </head>
@@ -309,30 +128,27 @@
 
 <header>
   <a class="logo" href="#">
-    <div class="flag-bar">
-      <div class="f1"></div>
-      <div class="f2"></div>
-      <div class="f3"></div>
-    </div>
+    <div class="flag-bar"><div class="f1"></div><div class="f2"></div><div class="f3"></div></div>
     <span class="logo-text">Romania<span>AI</span></span>
     <span class="beta-tag">Beta</span>
   </a>
+  <nav><a onclick="openAbout()">About</a></nav>
 </header>
 
 <section class="hero">
-  <div class="hero-eyebrow">🇷🇴 Built for Romania</div>
+  <div class="hero-eyebrow">Built for Romania</div>
   <h1>Navigate Romania<br>with <em>confidence</em></h1>
   <p>Your AI guide to Romanian bureaucracy, banking, taxes, housing, and more — in plain language, with official sources.</p>
-
-  <div class="topics">
-    <button class="topic-pill" onclick="askQuestion('How do I renew my residence permit in Romania?')">🪪 Residence permit</button>
-    <button class="topic-pill" onclick="askQuestion('How do I open a bank account in Romania as a foreigner?')">🏦 Bank account</button>
-    <button class="topic-pill" onclick="askQuestion('How do I register a SRL company in Romania?')">🏢 Start a company</button>
-    <button class="topic-pill" onclick="askQuestion('What taxes do freelancers pay in Romania?')">💶 Freelancer taxes</button>
-    <button class="topic-pill" onclick="askQuestion('Where can I find student housing in Timișoara?')">🏠 Student housing</button>
-    <button class="topic-pill" onclick="askQuestion('How do I get a Romanian driving license?')">🚗 Driving license</button>
-  </div>
 </section>
+
+<div class="faq-pills">
+  <button class="faq-pill" onclick="ask('How do I renew my residence permit in Romania?')">Residence permit</button>
+  <button class="faq-pill" onclick="ask('How do I open a bank account in Romania as a foreigner?')">Open a bank account</button>
+  <button class="faq-pill" onclick="ask('How do I register a SRL company in Romania?')">Register a company</button>
+  <button class="faq-pill" onclick="ask('What taxes do freelancers pay in Romania?')">Freelancer taxes</button>
+  <button class="faq-pill" onclick="ask('Where can I find student housing in Timisoara?')">Student housing</button>
+  <button class="faq-pill" onclick="ask('How do I get a Romanian driving license?')">Driving license</button>
+</div>
 
 <div class="chat-wrapper">
   <div class="chat-box">
@@ -340,14 +156,13 @@
       <div class="msg ai">
         <div class="avatar ai">R</div>
         <div class="bubble">
-          <strong>Welcome to RomaniaAI 👋</strong>
-          I'm your AI assistant for everything Romania — from bureaucracy and banking to taxes and housing. Ask me anything, or pick a topic above to get started.
+          <strong>Welcome to RomaniaAI</strong>
+          I am your AI assistant for everything Romania — bureaucracy, banking, taxes, housing and more. Pick a topic above or ask me anything to get started.
         </div>
       </div>
     </div>
     <div class="input-area">
-      <textarea id="userInput" placeholder="Ask me anything about living in Romania…" rows="1"
-        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <textarea id="userInput" placeholder="Ask me anything about living in Romania…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
       <button class="send-btn" id="sendBtn" onclick="sendMessage()">
         <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
       </button>
@@ -361,147 +176,257 @@
     <div class="strip" style="background:var(--yellow)"></div>
     <div class="strip" style="background:var(--red)"></div>
   </div>
-  RomaniaAI is a demo project. Always verify information with official Romanian authorities.
+  RomaniaAI is a demo project. Always verify with official Romanian authorities.
 </footer>
+
+
+<div class="about-overlay" id="aboutOverlay" onclick="overlayClick(event)">
+  <div class="about-panel">
+    <button class="about-close" onclick="closeAbout()">×</button>
+
+    <!-- Header -->
+    <div class="a-head">
+      <div class="a-avatar"><span>W</span></div>
+      <div class="a-name">Ward Dib</div>
+      <div class="a-role">Builder of RomaniaAI</div>
+      <div class="a-bio">Highly motivated 3rd Year IT Engineering student with a strong foundation in Python, Data Science, AI and full-stack development. Fast learner, adaptable and proactive problem solver with strong teamwork and communication skills.</div>
+      <div class="a-contacts">
+        <a href="mailto:warddeeb822@gmail.com" class="a-contact primary">warddeeb822@gmail.com</a>
+        <a href="https://linkedin.com/in/ward-dib-12b5923b6" target="_blank" class="a-contact secondary">LinkedIn</a>
+        <a href="https://github.com/Ward8-py" target="_blank" class="a-contact secondary">GitHub</a>
+        <span class="a-contact secondary">+(40) 775 124 529</span>
+        <span class="a-contact secondary">Timisoara, Romania</span>
+      </div>
+    </div>
+
+    
+    <div class="a-section">
+      <div class="a-section-title">Education</div>
+      <div class="a-card">
+        <div class="a-card-title">West University of Timisoara</div>
+        <div class="a-card-tag">Computer Science</div>
+        <div class="a-card-sub">Timisoara, Romania — 2025 to Present</div>
+        <div class="a-card-desc">Data Structures & Algorithms, Software Engineering, Databases</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Arab International University</div>
+        <div class="a-card-tag">IT Engineering, AI</div>
+        <div class="a-card-sub">Damascus, Syria — September 2023 to 2025</div>
+        <div class="a-card-desc">Data Structures & Algorithms, Software Engineering, Databases</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Pakistan International School</div>
+        <div class="a-card-sub">Damascus, Syria — June 2023</div>
+        <div class="a-card-desc">Valedictorian · A overall average · Basketball Team Captain · 2022–2023 Champions</div>
+      </div>
+    </div>
+
+    <div class="a-section">
+      <div class="a-section-title">Certifications</div>
+      <div class="a-card">
+        <div class="a-card-title">Python for Data Science and AI</div>
+        <div class="a-card-sub">IBM</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Neural Networks and Deep Learning</div>
+        <div class="a-card-sub">DeepLearning.AI</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Introduction to HTML, CSS & JavaScript</div>
+        <div class="a-card-sub">IBM</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Introduction to Software Engineering</div>
+        <div class="a-card-sub">IBM</div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-title">Yaf3in Fa3lin Effective Communication Program</div>
+        <div class="a-card-sub">Houna Hawyati</div>
+      </div>
+    </div>
+
+   
+    <div class="a-section">
+      <div class="a-section-title">Experience</div>
+      <div class="a-card">
+        <div class="a-card-title">Operational Manager</div>
+        <div class="a-card-tag">Insan Foundation</div>
+        <div class="a-card-sub">Damascus, Syria — March 2022 to October 2025</div>
+        <ul class="a-card-bullets">
+          <li>Coordinated relief operations during the earthquake crisis on the Syrian coast</li>
+          <li>Managed logistics and supervised volunteers to support hundreds of affected families</li>
+          <li>Collaborated with local teams and partner organizations to maximize efficiency</li>
+          <li>Developed leadership skills overseeing day-to-day operations in high-pressure environments</li>
+        </ul>
+      </div>
+    </div>
+
+    
+    <div class="a-section">
+      <div class="a-section-title">Freelance Projects</div>
+      <div class="a-card">
+        <div class="a-project-num">Project 01</div>
+        <div class="a-card-title">RomaniaAI</div>
+        <div class="a-card-desc">AI-powered chatbot assistant for navigating Romanian bureaucracy. ChatGPT-styled interface built in a single HTML file with conversation memory, structured responses and OpenRouter API integration.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-project-num">Project 02</div>
+        <div class="a-card-title">PulseAI</div>
+        <div class="a-card-desc">Bloomberg Terminal-styled real-time news intelligence dashboard in React. Pulls live articles across 6 categories, runs LLM analysis (bullish/bearish/neutral), AI summaries, and live market ticker.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-project-num">Project 03</div>
+        <div class="a-card-title">Movie App</div>
+        <div class="a-card-desc">Vite + React project using TMDB API and Appwrite for backend. Real API integration, environment variable management, Tailwind CSS and Flowbite for styling.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-project-num">Project 04</div>
+        <div class="a-card-title">Deep Neural Network (from scratch)</div>
+        <div class="a-card-desc">L-layer deep neural network built from scratch using NumPy only. Full training pipeline including weight initialization, forward propagation, backpropagation and gradient descent. Trained on scikit-learn Digits dataset.</div>
+      </div>
+      <div class="a-card">
+        <div class="a-project-num">Project 05</div>
+        <div class="a-card-title">ThreeJS Valentine's Gift</div>
+        <div class="a-card-desc">Interactive 3D particle system rendering 25,000 particles in real time using custom GLSL shaders. GPU-side morphing between five geometric shapes with MediaPipe Hands gesture recognition.</div>
+      </div>
+    </div>
+
+   
+    <div class="a-section">
+      <div class="a-section-title">Technical Skills</div>
+      <div class="chip-wrap">
+        <span class="chip chip-b">Python</span>
+        <span class="chip chip-b">Java</span>
+        <span class="chip chip-b">C++</span>
+        <span class="chip chip-b">C</span>
+        <span class="chip chip-b">HTML / CSS</span>
+        <span class="chip chip-b">JavaScript</span>
+        <span class="chip chip-b">React.js</span>
+        <span class="chip chip-b">Node.js</span>
+        <span class="chip chip-b">PHP</span>
+        <span class="chip chip-b">SQL</span>
+      </div>
+    </div>
+
+    
+    <div class="a-section">
+      <div class="a-section-title">Languages</div>
+      <div class="chip-wrap" style="margin-bottom:16px;">
+        <span class="chip chip-r">English — Fluent</span>
+        <span class="chip chip-r">Arabic — Fluent</span>
+      </div>
+      <div class="a-section-title" style="margin-top:16px;">Interests</div>
+      <div class="chip-wrap">
+        <span class="chip chip-y">Powerlifting</span>
+        <span class="chip chip-y">Chess</span>
+        <span class="chip chip-y">Volunteering</span>
+        <span class="chip chip-y">Programming</span>
+        <span class="chip chip-y">Problem Solving</span>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
 const SYSTEM_PROMPT = `You are RomaniaAI, an expert AI assistant specialized in helping people navigate life in Romania — including bureaucracy, banking, taxes, housing, visas, company registration, healthcare, and more.
 
-Respond in a structured, helpful way. Use this exact HTML format for your answers (output raw HTML, no markdown):
+Respond in a structured, helpful way. Use this exact HTML format (output raw HTML only, no markdown, no code fences):
 
-For step-by-step processes, use:
-<strong>Title of the answer</strong>
+For step-by-step processes use:
+<strong>Title here</strong>
 Brief intro sentence.
-<div class="step"><div class="step-num">1</div><div class="step-text">Step description</div></div>
-... more steps ...
+<div class="step"><div class="step-num">1</div><div class="step-text">Step detail</div></div>
 
-For official links/resources, add:
-<div style="margin-top:12px"><span class="link-chip">🔗 Official Site Name</span></div>
+For official links use:
+<div style="margin-top:12px"><span class="link-chip">Official Site Name</span></div>
 
-For important warnings/deadlines, use:
-<div class="warning-box">⚠️ Warning text here</div>
+For warnings use:
+<div class="warning-box">Warning text here</div>
 
-Keep answers practical, accurate, and concise. Focus on actionable steps. Mention specific Romanian institutions (ANAF, IGI, ONRC, etc.) where relevant. Always note if the person should consult an official source for their specific situation.
+Be practical, accurate and concise. Mention Romanian institutions (ANAF, IGI, ONRC etc.) where relevant.`;
 
-Respond ONLY with the HTML content for the bubble — no preamble, no code fences.`;
+let history = [];
 
-let conversationHistory = [];
-
-async function sendMessage(overrideText) {
+async function sendMessage(preset) {
   const input = document.getElementById('userInput');
-  const text = overrideText || input.value.trim();
+  const text = (preset || input.value).trim();
   if (!text) return;
-
   input.value = '';
   autoResize(input);
-
-  appendMessage('user', text);
-  conversationHistory.push({ role: 'user', content: text });
-
+  appendMsg('user', text, false);
+  history.push({ role: 'user', content: text });
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
-  const typingId = showTyping();
-
+  const tid = showTyping();
   try {
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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',
-        'HTTP-Referer': 'http://localhost:5500',
+        'Authorization': 'Bearer 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',
+        'HTTP-Referer': 'https://romaniaai.app',
         'X-Title': 'RomaniaAI'
       },
       body: JSON.stringify({
-        model: 'openrouter/auto',
+        model: 'openrouter/hunter-alpha',
         max_tokens: 1000,
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...conversationHistory
-        ]
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...history]
       })
     });
-
-    const data = await res.json();
-    console.log('API response:', JSON.stringify(data));
-    const aiText = data.choices?.[0]?.message?.content || 'API error: ' + JSON.stringify(data);
-
-    removeTyping(typingId);
-    conversationHistory.push({ role: 'assistant', content: aiText });
-    appendMessage('ai', aiText, true);
-  } catch (err) {
-    removeTyping(typingId);
-    const errMsg = err?.message || String(err);
-    appendMessage('ai', '<strong>Error:</strong> ' + errMsg, true);
-    console.error('Full error:', err);
+    const d = await resp.json();
+    const m = d.choices && d.choices[0] && d.choices[0].message;
+    let reply = (m && (m.content || m.reasoning)) || '';
+    if (!reply) reply = '<strong>Error:</strong> ' + ((d.error && d.error.message) || JSON.stringify(d));
+    removeTyping(tid);
+    history.push({ role: 'assistant', content: reply });
+    appendMsg('ai', reply, true);
+  } catch(e) {
+    removeTyping(tid);
+    appendMsg('ai', '<strong>Network error:</strong> ' + e.message, true);
   }
-
   btn.disabled = false;
   input.focus();
 }
 
-function appendMessage(role, content, isHTML = false) {
-  const messages = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
+function ask(q) { sendMessage(q); }
 
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = `avatar ${role === 'ai' ? 'ai' : 'user-av'}`;
-  avatarDiv.textContent = role === 'ai' ? 'R' : '👤';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
-  if (isHTML) {
-    bubble.innerHTML = content;
-  } else {
-    bubble.textContent = content;
-  }
-
-  div.appendChild(avatarDiv);
-  div.appendChild(bubble);
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+function appendMsg(role, content, html) {
+  const box = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'avatar ' + (role === 'ai' ? 'ai' : 'user-av');
+  av.textContent = role === 'ai' ? 'R' : 'U';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  if (html) bub.innerHTML = content; else bub.textContent = content;
+  wrap.appendChild(av); wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
 }
 
 function showTyping() {
-  const messages = document.getElementById('messages');
-  const id = 'typing-' + Date.now();
-  const div = document.createElement('div');
-  div.className = 'msg ai'; div.id = id;
-
+  const box = document.getElementById('messages');
+  const id = 'ty' + Date.now();
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ai'; wrap.id = id;
   const av = document.createElement('div');
   av.className = 'avatar ai'; av.textContent = 'R';
-
-  const indicator = document.createElement('div');
-  indicator.className = 'typing-indicator';
-  indicator.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-
-  div.appendChild(av); div.appendChild(indicator);
-  messages.appendChild(div);
-  messages.scrollTop = messages.scrollHeight;
+  const ind = document.createElement('div');
+  ind.className = 'typing-indicator';
+  ind.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  wrap.appendChild(av); wrap.appendChild(ind);
+  box.appendChild(wrap); box.scrollTop = box.scrollHeight;
   return id;
 }
 
-function removeTyping(id) {
-  const el = document.getElementById(id);
-  if (el) el.remove();
-}
-
-function askQuestion(q) {
-  document.getElementById('userInput').value = q;
-  sendMessage();
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
+function removeTyping(id) { const e = document.getElementById(id); if(e) e.remove(); }
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function autoResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function openAbout() { document.getElementById('aboutOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeAbout() { document.getElementById('aboutOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function overlayClick(e) { if(e.target===document.getElementById('aboutOverlay')) closeAbout(); }
 </script>
 </body>
 </html>
